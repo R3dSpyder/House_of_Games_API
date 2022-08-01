@@ -16,6 +16,7 @@ describe("/api/getCategories", () => {
       .get("/api/categories")
       .expect(200)
       .then(({ body }) => {
+        console.log(body);
         expect(Array.isArray(body)).toEqual(true);
         expect(typeof body[0] === "object").toEqual(true);
       });
