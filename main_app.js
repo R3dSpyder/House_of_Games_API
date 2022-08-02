@@ -20,7 +20,4 @@ app.use(customError);
 app.use(psqlError);
 app.use(uncaughtError);
 
-//server setup
-const server = app.listen(9090);
-
-module.exports = { app: app, server };
+module.exports = { app: app };

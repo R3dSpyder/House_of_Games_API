@@ -1,12 +1,13 @@
 const request = require("supertest");
+const db = require("../db/connection.js");
 const seed = require("../db/seeds/seed.js");
-const { server, app } = require("../main_app");
+const { app } = require("../main_app");
 const destroy = require("../__helpers__/helpers.testing.js");
 const testData = require("../db/data/test-data/index.js");
 
 beforeEach(() => seed(testData));
 afterAll(() => {
-  destroy(server);
+  return db.end();
 });
 
 ///////////////////API GET CATEGORIES//////////////////////////
