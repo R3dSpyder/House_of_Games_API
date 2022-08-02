@@ -1,13 +1,26 @@
+const getCategories = require("./mvc/controllers/getCategories.js");
+const categories = require("./routes/categories");
+const reviews = require("./routes/reviews");
+const getReviewObjectById = require("./mvc/controllers/getReviewObject");
+const {
+  customError,
+  psqlError,
+  uncaughtError,
+} = require("./error_handling/index.js");
+
 const express = require("express");
 const app = express();
-const getCategories = require("./mvc/controllers/getCategories.js");
-app.use(express.json());
 
-// returns an array of category objects with slug and description properties
-app.get("/api/categories", getCategories);
+//routes
+app.use("/api/categories", categories);
+app.use("/api/reviews", reviews);
 
-const server = app.listen(9090, () => {
-  console.log("..::server is now online and listening at port 9090::..");
-});
+//error handling.
+app.use(customError);
+app.use(psqlError);
+app.use(uncaughtError);
 
-module.exports = { app, server };
+//server setup
+const server = app.listen(9090);
+
+module.exports = { app: app, server };
