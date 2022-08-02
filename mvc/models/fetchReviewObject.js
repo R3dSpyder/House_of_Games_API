@@ -7,10 +7,7 @@ const fetchReviewObjectById = (id) => {
     .query("SELECT * FROM reviews WHERE review_id=$1", [id])
     .then(({ rows }) => {
       if (!rows[0]) {
-        return Promise.reject({
-          status: 400,
-          msg: "Bad request. ID out of bounds",
-        });
+        return Promise.reject({ status: 404, msg: "ID out of range" });
       }
       return rows[0];
     });

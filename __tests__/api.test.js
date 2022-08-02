@@ -2,7 +2,6 @@ const request = require("supertest");
 const db = require("../db/connection.js");
 const seed = require("../db/seeds/seed.js");
 const { app } = require("../main_app");
-const destroy = require("../__helpers__/helpers.testing.js");
 const testData = require("../db/data/test-data/index.js");
 
 beforeEach(() => seed(testData));
@@ -65,9 +64,7 @@ describe("/api/getCategories", () => {
       .get("/api/categories/funny")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe(
-          "Path Not Found. The correct path is /api/categories"
-        );
+        expect(body.msg).toBe("Path Not Found.");
       });
   });
 });
@@ -85,27 +82,52 @@ describe("/api/getReviewObjectById", () => {
   });
 
   it("return correct object given correct ID", () => {
+    const referenceObject = {
+      review_id: 3,
+      title: "Ultimate Werewolf",
+      category: "social deduction",
+      designer: "Akihisa Okui",
+      owner: "bainesface",
+      review_body: "We couldn't find the werewolf!",
+      review_img_url:
+        "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+      created_at: "2021-01-18T10:01:41.251Z",
+      votes: 5,
+    };
     return request(app)
       .get("/api/reviews/3")
       .expect(200)
       .then(({ body }) => {
-        expect(body.category).toEqual(expect.any(String));
-        expect(body.created_at).toEqual(expect.any(String));
-        expect(body.designer).toEqual(expect.any(String));
-        expect(body.owner).toEqual(expect.any(String));
-        expect(body.review_body).toEqual(expect.any(String));
-        expect(parseInt(body.review_id)).toBe(3);
-        expect(body.review_img_url).toEqual(expect.any(String));
-        expect(body.title).toEqual(expect.any(String));
+        expect(body.review).toEqual(referenceObject);
       });
   });
 
-  it("return an error if id out of bounds is used", () => {
+  it("return an error if id is invalid", () => {
     return request(app)
       .get("/api/reviews/2000")
-      .expect(400)
+      .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Bad request. ID out of bounds");
+        expect(body.msg).toBe("ID out of range");
+      });
+  });
+
+  it("return an error if id is of an incorrect type", () => {
+    return request(app)
+      .get("/api/reviews/notANumber")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe(
+          "Not Found. You need to specify a valid integer ID in format api/review/<integer_id>"
+        );
+      });
+  });
+
+  it("return an error if someone entered an additional path", () => {
+    return request(app)
+      .get("/api/reviews/6/top_marks/")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found. That path has not been found.");
       });
   });
 });
