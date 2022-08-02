@@ -27,8 +27,8 @@ The models begin with 'fetch', 'make', 'remove'.
 
 ### SETUP:
 
-1)In the environment_varaibles folder create a file called .env.development and place the following inside: PGDATABASE=nc_games.
-2)In the environment_varaibles folder create a file called .env.test and place the following inside: PGDATABASE=nc_games_test.
+1)In the .env.development file, place the following sentence inside: PGDATABASE=nc_games.
+2)In the .env.test file, place the following sentence inside: PGDATABASE=nc_games_test.
 3)Run 'npm run setup-dbs' to create the databases.
 
 ### INSTRUCTIONS

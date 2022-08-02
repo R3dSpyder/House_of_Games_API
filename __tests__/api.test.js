@@ -1,15 +1,15 @@
 const request = require("supertest");
+const db = require("../db/connection.js");
 const seed = require("../db/seeds/seed.js");
-const { server, app } = require("../main_app");
-const destroy = require("../__helpers__/helpers.testing.js");
+const { app } = require("../main_app");
 const testData = require("../db/data/test-data/index.js");
 
 beforeEach(() => seed(testData));
 afterAll(() => {
-  destroy(server);
-  console.log("..::Tests completed. Server now offline again::..");
+  return db.end();
 });
 
+///////////////////API GET CATEGORIES//////////////////////////
 describe("/api/getCategories", () => {
   it("return an array of objects", () => {
     return request(app)
@@ -56,6 +56,78 @@ describe("/api/getCategories", () => {
             typeof member.slug && typeof member.description === "string"
           ).toBe(true);
         });
+      });
+  });
+
+  it("error handling, expect 404 custom error if bad path", () => {
+    return request(app)
+      .get("/api/categories/funny")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Path Not Found.");
+      });
+  });
+});
+////////////////////// API GET REVIEW OBJECT BY ID//////////////////////////////
+
+describe("/api/getReviewObjectById", () => {
+  it("return a sinlge entity in the form of an object", () => {
+    return request(app)
+      .get("/api/reviews/1")
+      .expect(200)
+      .then(({ body }) => {
+        expect(Array.isArray(body)).toEqual(false);
+        expect(typeof body === "object").toEqual(true);
+      });
+  });
+
+  it("return correct object given correct ID", () => {
+    const referenceObject = {
+      review_id: 3,
+      title: "Ultimate Werewolf",
+      category: "social deduction",
+      designer: "Akihisa Okui",
+      owner: "bainesface",
+      review_body: "We couldn't find the werewolf!",
+      review_img_url:
+        "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+      created_at: "2021-01-18T10:01:41.251Z",
+      votes: 5,
+    };
+    return request(app)
+      .get("/api/reviews/3")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.review).toEqual(referenceObject);
+      });
+  });
+
+  it("return an error if id is invalid", () => {
+    return request(app)
+      .get("/api/reviews/2000")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("ID out of range");
+      });
+  });
+
+  it("return an error if id is of an incorrect type", () => {
+    return request(app)
+      .get("/api/reviews/notANumber")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe(
+          "Not Found. You need to specify a valid integer ID in format api/review/<integer_id>"
+        );
+      });
+  });
+
+  it("return an error if someone entered an additional path", () => {
+    return request(app)
+      .get("/api/reviews/6/top_marks/")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found. That path has not been found.");
       });
   });
 });
