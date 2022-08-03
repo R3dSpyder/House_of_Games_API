@@ -1,8 +1,14 @@
 const fetchCategories = require("../models/fetchCategories.js");
 
 const getCategories = async (req, res, next) => {
-  const response = await fetchCategories().catch(next);
-  res.status(200).send(response);
+  try {
+    const response = await fetchCategories();
+    if (response) {
+      res.status(200).send(response);
+    }
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = getCategories;

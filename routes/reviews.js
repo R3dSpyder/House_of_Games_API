@@ -12,8 +12,6 @@ router.route("/:review_id(\\D*)").get((req, res) => {
   });
 });
 
-router.route;
-
 router
   .route("/*")
   .get((req, res) => {
@@ -28,7 +26,7 @@ router
   })
   .put((req, res) => {
     res.status(404).send({
-      msg: "Cannot ammend that resource. Not found. You need to specify a valid ID",
+      msg: "Cannot amend that resource. Not found. You need to specify a valid ID",
     });
   });
 

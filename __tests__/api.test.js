@@ -145,7 +145,7 @@ describe("/api/:review_id put request to change the vote on a comment", () => {
       });
   });
 
-  it.only("returns an error if id does not exist", () => {
+  it("returns an error if id does not exist", () => {
     return request(app)
       .put("/api/reviews/100")
       .send({ inc_votes: 1 })
