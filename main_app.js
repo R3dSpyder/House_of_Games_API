@@ -1,7 +1,7 @@
-const getCategories = require("./mvc/controllers/getCategories.js");
 const categories = require("./routes/categories");
 const reviews = require("./routes/reviews");
-const getReviewObjectById = require("./mvc/controllers/getReviewObject");
+const users = require("./routes/users");
+
 const {
   customError,
   psqlError,
@@ -10,10 +10,12 @@ const {
 
 const express = require("express");
 const app = express();
+app.use(express.json());
 
 //routes
 app.use("/api/categories", categories);
 app.use("/api/reviews", reviews);
+app.use("api/users", users);
 
 //error handling.
 app.use(customError);

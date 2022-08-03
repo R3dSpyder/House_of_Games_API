@@ -71,7 +71,7 @@ describe("/api/getCategories", () => {
 ////////////////////// API GET REVIEW OBJECT BY ID//////////////////////////////
 
 describe("/api/getReviewObjectById", () => {
-  it("return a sinlge entity in the form of an object", () => {
+  it("return a single entity in the form of an object", () => {
     return request(app)
       .get("/api/reviews/1")
       .expect(200)
@@ -128,6 +128,60 @@ describe("/api/getReviewObjectById", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Not Found. That path has not been found.");
+      });
+  });
+});
+
+////////////////////// PUT VOTES //////////////////////////////
+
+describe("/api/:review_id put request to change the vote on a comment", () => {
+  it("returns an error if nothing passed to the post request", () => {
+    return request(app)
+      .put("/api/reviews/1")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request format to update vote");
+      });
+  });
+
+  it("returns an error if id does not exist", () => {
+    return request(app)
+      .put("/api/reviews/100")
+      .send({ inc_votes: 1 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("ID out of range");
+      });
+  });
+
+  it("returns an object of some type if passed an object", () => {
+    return request(app)
+      .put("/api/reviews/1")
+      .send({ inc_votes: 1 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(typeof body === "object").toEqual(true);
+      });
+  });
+
+  it("returns an object with the updated vote changed by 1 ", () => {
+    return request(app)
+      .put("/api/reviews/1")
+      .send({ inc_votes: 1 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.votes).toBe(2);
+      });
+  });
+
+  it("returns an object with the updated vote changed by 2 ", () => {
+    return request(app)
+      .put("/api/reviews/1")
+      .send({ inc_votes: 2 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.votes).toBe(3);
       });
   });
 });
