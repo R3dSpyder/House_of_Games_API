@@ -236,3 +236,35 @@ describe("/api/reviews/:review_id get request", () => {
       );
   });
 });
+
+////////////////////// FETCH ALL REVIEWS //////////////////////////////
+
+describe("/api/reviews get request to get ALL review objects", () => {
+  it("return an array of objects", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        expect(Array.isArray(body)).toEqual(true);
+        expect(typeof body[0] === "object").toEqual(true);
+      });
+  });
+
+  it("each object returned has the requested keys", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.review).hasOwnProperty("review_id");
+        expect(body.review).hasOwnProperty("title");
+        expect(body.review).hasOwnProperty("category");
+        expect(body.review).hasOwnProperty("designer");
+        expect(body.review).hasOwnProperty("owner");
+        expect(body.review).hasOwnProperty("review_body");
+        expect(body.review).hasOwnProperty("review_img_url");
+        expect(body.review).hasOwnProperty("created_at");
+        expect(body.review).hasOwnProperty("votes");
+        expect(body.review).hasOwnProperty("comment_count");
+      });
+  });
+});
