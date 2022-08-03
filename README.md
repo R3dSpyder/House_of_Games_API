@@ -8,8 +8,8 @@ The API is designed to .....
 
 ## NAMING CONVENTIONS
 
-The controllers begin with 'get', 'post' 'delete'.
-The models begin with 'fetch', 'make', 'remove'.
+The controllers begin with 'get', 'post' 'delete', 'patch'
+The models begin with 'fetch', 'make', 'remove', 'put'
 
 ### DEPENDENCIES
 
