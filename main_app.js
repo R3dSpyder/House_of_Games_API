@@ -15,7 +15,7 @@ app.use(express.json());
 //routes
 app.use("/api/categories", categories);
 app.use("/api/reviews", reviews);
-app.use("api/users", users);
+app.use("/api/users", users);
 
 //error handling.
 app.use(customError);
