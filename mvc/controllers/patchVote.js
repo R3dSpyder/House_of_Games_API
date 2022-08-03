@@ -5,7 +5,7 @@ const patchVote = async (req, res, next) => {
     try {
       const patch = await putVote(req.body, req.params.review_id);
       if (patch) {
-        res.status(202).send(patch);
+        res.status(200).send(patch);
       }
     } catch (error) {
       next(error);

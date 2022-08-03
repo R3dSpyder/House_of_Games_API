@@ -159,7 +159,7 @@ describe("/api/:review_id put request to change the vote on a comment", () => {
     return request(app)
       .put("/api/reviews/1")
       .send({ inc_votes: 1 })
-      .expect(202)
+      .expect(200)
       .then(({ body }) => {
         expect(typeof body === "object").toEqual(true);
       });
@@ -169,7 +169,7 @@ describe("/api/:review_id put request to change the vote on a comment", () => {
     return request(app)
       .put("/api/reviews/1")
       .send({ inc_votes: 1 })
-      .expect(202)
+      .expect(200)
       .then(({ body }) => {
         expect(body.votes).toBe(2);
       });
@@ -179,7 +179,7 @@ describe("/api/:review_id put request to change the vote on a comment", () => {
     return request(app)
       .put("/api/reviews/1")
       .send({ inc_votes: 2 })
-      .expect(202)
+      .expect(200)
       .then(({ body }) => {
         expect(body.votes).toBe(3);
       });
