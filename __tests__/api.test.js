@@ -58,22 +58,13 @@ describe("/api/getCategories", () => {
         });
       });
   });
-
-  it("error handling, expect 404 custom error if bad path", () => {
-    return request(app)
-      .get("/api/categories/funny")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Path Not Found.");
-      });
-  });
 });
 ////////////////////// API GET REVIEW OBJECT BY ID//////////////////////////////
 
 describe("/api/getReviewObjectById", () => {
   it("return a single entity in the form of an object", () => {
     return request(app)
-      .get("/api/reviews/1")
+      .get("/api/reviews/3")
       .expect(200)
       .then(({ body }) => {
         expect(Array.isArray(body)).toEqual(false);
@@ -98,7 +89,16 @@ describe("/api/getReviewObjectById", () => {
       .get("/api/reviews/3")
       .expect(200)
       .then(({ body }) => {
-        expect(body.review).toEqual(referenceObject);
+        expect(body.review).hasOwnProperty("review_id");
+        expect(body.review).hasOwnProperty("title");
+        expect(body.review).hasOwnProperty("category");
+        expect(body.review).hasOwnProperty("designer");
+        expect(body.review).hasOwnProperty("owner");
+        expect(body.review).hasOwnProperty("review_body");
+        expect(body.review).hasOwnProperty("review_img_url");
+        expect(body.review).hasOwnProperty("created_at");
+        expect(body.review).hasOwnProperty("votes");
+        expect(body.review.review_id).toBe(3);
       });
   });
 
@@ -119,15 +119,6 @@ describe("/api/getReviewObjectById", () => {
         expect(body.msg).toBe(
           "Not Found. You need to specify a valid integer ID in format api/review/<integer_id>"
         );
-      });
-  });
-
-  it("return an error if someone entered an additional path", () => {
-    return request(app)
-      .get("/api/reviews/6/top_marks/")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Not Found. That path has not been found.");
       });
   });
 });
@@ -210,13 +201,38 @@ describe("/api/users get request", () => {
         });
       });
   });
+});
 
-  it("returns an error if wrong path", () => {
+////////////////////// COUNT COMMENTS //////////////////////////////
+describe("/api/reviews/:review_id get request", () => {
+  it(" check the new review Object has a the new comment_count_key", () => {
     return request(app)
-      .get("/api/users/all")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Not Found. That path has not been found.");
-      });
+      .get("/api/reviews/3")
+      .expect(200)
+      .then(
+        ({
+          body: {
+            review: { comment_count },
+          },
+        }) => {
+          const notNull = comment_count.length >= 1;
+          expect(notNull).toBe(true);
+        }
+      );
+  });
+
+  it(" check the new review Object has the CORRECT comment_count value for comments", () => {
+    return request(app)
+      .get("/api/reviews/3")
+      .expect(200)
+      .then(
+        ({
+          body: {
+            review: { comment_count },
+          },
+        }) => {
+          expect(comment_count).toBe("3");
+        }
+      );
   });
 });
