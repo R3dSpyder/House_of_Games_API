@@ -185,3 +185,38 @@ describe("/api/:review_id put request to change the vote on a comment", () => {
       });
   });
 });
+
+////////////////////// GET USERS //////////////////////////////
+
+describe("/api/users get request", () => {
+  it("returns an array of objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { users } }) => {
+        expect(Array.isArray(users) === true).toBe(true);
+      });
+  });
+
+  it("returns an array of objects containing the properties requested (username, name, avatar_url)", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { users } }) => {
+        users.forEach((user) => {
+          expect(user).toHaveProperty("username");
+          expect(user).toHaveProperty("name");
+          expect(user).toHaveProperty("avatar_url");
+        });
+      });
+  });
+
+  it("returns an error if wrong path", () => {
+    return request(app)
+      .get("/api/users/all")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found. That path has not been found.");
+      });
+  });
+});
