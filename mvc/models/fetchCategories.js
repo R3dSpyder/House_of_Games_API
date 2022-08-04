@@ -2,10 +2,10 @@ const db = require("../../db/connection.js");
 
 const fetchCategories = () => {
   return db.query(`SELECT * FROM categories`).then(({ rows }) => {
-    if (!rows) {
+    if (rows.length === 0) {
       return Promise.reject({
-        status: 400,
-        msg: "bad request. Table does not exist at that path",
+        status: 404,
+        msg: "Not found. No data",
       });
     }
     return rows;
