@@ -7,7 +7,7 @@ const putVote = ({ inc_votes }, id) => {
       [inc_votes, id]
     )
     .then(({ rows }) => {
-      if (!rows[0]) {
+      if (rows.length === 0) {
         return Promise.reject({ status: 404, msg: "ID out of range" });
       }
       return rows[0];

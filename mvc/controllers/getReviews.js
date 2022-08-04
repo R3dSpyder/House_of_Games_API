@@ -7,6 +7,7 @@ const getReviews = async (req, res, next) => {
       res.status(200).send(response);
     }
   } catch (error) {
+  
     next(error);
   }
 };

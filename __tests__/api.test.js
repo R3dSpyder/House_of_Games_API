@@ -146,7 +146,7 @@ describe("/api/:review_id put request to change the vote on a comment", () => {
       });
   });
 
-  it("returns an object of some type if passed an object", () => {
+  it("returns an object with data if correct ID", () => {
     return request(app)
       .put("/api/reviews/1")
       .send({ inc_votes: 1 })
@@ -235,6 +235,29 @@ describe("/api/reviews/:review_id get request", () => {
         }
       );
   });
+
+  it(" check the new review Object still returns if there are no comments to add to it", () => {
+    return request(app)
+      .get("/api/reviews/5")
+      .expect(200)
+      .then(({ body: { review } }) => {
+        const reference = {
+          category: "social deduction",
+          comment_count: "0",
+          created_at: "2021-01-07T09:06:08.077Z",
+          designer: "Seymour Buttz",
+          owner: "mallionaire",
+          review_body:
+            "Labore occaecat sunt qui commodo anim anim aliqua adipisicing aliquip fugiat. Ad in ipsum incididunt esse amet deserunt aliqua exercitation occaecat nostrud irure labore ipsum. Culpa tempor non voluptate reprehenderit deserunt pariatur cupidatat aliqua adipisicing. Nostrud labore dolor fugiat sint consequat excepteur dolore irure eu. Anim ex adipisicing magna deserunt enim fugiat do nulla officia sint. Ex tempor ut aliquip exercitation eiusmod. Excepteur deserunt officia voluptate sunt aliqua esse deserunt velit. In id non proident veniam ipsum id in consequat duis ipsum et incididunt. Qui cupidatat ea deserunt magna proident nisi nulla eiusmod aliquip magna deserunt fugiat fugiat incididunt. Laboris nisi velit mollit ullamco deserunt eiusmod deserunt ea dolore veniam.",
+          review_id: 5,
+          review_img_url:
+            "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg",
+          title: "Proident tempor et.",
+          votes: 5,
+        };
+        expect(review).toEqual(reference);
+      });
+  });
 });
 
 ////////////////////// FETCH ALL REVIEWS //////////////////////////////
@@ -265,6 +288,47 @@ describe("/api/reviews get request to get ALL review objects", () => {
         expect(body.review).hasOwnProperty("created_at");
         expect(body.review).hasOwnProperty("votes");
         expect(body.review).hasOwnProperty("comment_count");
+      });
+  });
+});
+
+////////////////////// FETCH COMMENTS //////////////////////////////
+
+describe("/api/:review_id/comments get request for comments associated with review via review id", () => {
+  it("return an array of objects", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(Array.isArray(body)).toEqual(true);
+        expect(typeof body[0] === "object").toEqual(true);
+      });
+  });
+
+  it("ensure each object returned has the requested keys", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        body.forEach((item) => {
+          expect(item.comments).hasOwnProperty("comment_id");
+          expect(item.comments).hasOwnProperty("votes");
+          expect(item.comments).hasOwnProperty("created_at");
+          expect(item.comments).hasOwnProperty("author");
+          expect(item.comments).hasOwnProperty("body");
+          expect(item.comments).hasOwnProperty("review_id");
+        });
+      });
+  });
+
+  it("return an error if no comments exist for that entry", () => {
+    return request(app)
+      .get("/api/reviews/5/comments")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual(
+          "Not found. There are no comments with that review_id."
+        );
       });
   });
 });
