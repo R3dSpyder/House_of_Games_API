@@ -9,7 +9,7 @@ afterAll(() => {
   return db.end();
 });
 
-///////////////////API GET CATEGORIES//////////////////////////
+///////////////////API GET CATEGORIES TASK3 //////////////////////////
 describe("/api/getCategories", () => {
   it("return an array of objects", () => {
     return request(app)
@@ -59,7 +59,7 @@ describe("/api/getCategories", () => {
       });
   });
 });
-////////////////////// API GET REVIEW OBJECT BY ID//////////////////////////////
+////////////////////// API GET REVIEW OBJECT BY ID TASK4 //////////////////////////////
 
 describe("/api/getReviewObjectById", () => {
   it("return a single entity in the form of an object", () => {
@@ -123,7 +123,7 @@ describe("/api/getReviewObjectById", () => {
   });
 });
 
-////////////////////// PUT VOTES //////////////////////////////
+////////////////////// PUT VOTES TASK5 //////////////////////////////
 
 describe("/api/:review_id put request to change the vote on a comment", () => {
   it("returns an error if nothing passed to the post request", () => {
@@ -177,7 +177,7 @@ describe("/api/:review_id put request to change the vote on a comment", () => {
   });
 });
 
-////////////////////// GET USERS //////////////////////////////
+////////////////////// GET USERS TASK6 //////////////////////////////
 
 describe("/api/users get request", () => {
   it("returns an array of objects", () => {
@@ -203,7 +203,7 @@ describe("/api/users get request", () => {
   });
 });
 
-////////////////////// COUNT COMMENTS //////////////////////////////
+////////////////////// COUNT COMMENTS TASK7 //////////////////////////////
 describe("/api/reviews/:review_id get request", () => {
   it(" check the new review Object has a the new comment_count_key", () => {
     return request(app)
@@ -260,7 +260,7 @@ describe("/api/reviews/:review_id get request", () => {
   });
 });
 
-////////////////////// FETCH ALL REVIEWS //////////////////////////////
+////////////////////// FETCH ALL REVIEWS TASK8 //////////////////////////////
 
 describe("/api/reviews get request to get ALL review objects", () => {
   it("return an array of objects", () => {
@@ -292,7 +292,7 @@ describe("/api/reviews get request to get ALL review objects", () => {
   });
 });
 
-////////////////////// FETCH COMMENTS //////////////////////////////
+////////////////////// FETCH COMMENTS TASK9 //////////////////////////////
 
 describe("/api/:review_id/comments get request for comments associated with review via review id", () => {
   it("return an array of objects", () => {
@@ -340,10 +340,11 @@ describe("/api/:review_id/comments get request for comments associated with revi
   });
 });
 
-////////////////////// POST COMMENT //////////////////////////////
+////////////////////// POST COMMENT TASK10 //////////////////////////////
 
 describe("/api/:review_id/comments POST request allows for comments to be created ", () => {
   const testPost = { username: "dav3rid", body: "This is the body for test" };
+  const testPostError = { username: "John", body: "Fabulous" };
 
   it("return a comment object on posting", () => {
     return request(app)
@@ -371,7 +372,7 @@ describe("/api/:review_id/comments POST request allows for comments to be create
       });
   });
 
-  it("returns with an object witht he CORRECT values", () => {
+  it("returns with an object with the CORRECT values", () => {
     return request(app)
       .post("/api/reviews/5/comments")
       .send(testPost)
@@ -386,4 +387,61 @@ describe("/api/:review_id/comments POST request allows for comments to be create
           });
       });
   });
+
+  it("returns with an error if asked to comment on invalid review", () => {
+    return request(app)
+      .post("/api/reviews/50/comments")
+      .send(testPost)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.error).toBe(
+          'Key (review_id)=(50) is not present in table "reviews".'
+        );
+      });
+  });
+
+  it("returns an error if the author is not known", () => {
+    return request(app)
+      .post("/api/reviews/5/comments")
+      .send(testPostError)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("user does not exist. Post aborted.");
+      });
+  });
 });
+
+////////////////////// ADDED ORDERING FOR GET REVIEWS TASK 11 //////////////////////////////
+
+describe("/api/reviews GET request with queries allows for sorted return ", () => {
+  it("allows for query to take place and doesn't return an error", () => {
+    return request(app)
+      .get(
+        "/api/reviews?sort_by=created_at&order=ASC&category=social deduction"
+      )
+      .expect(200);
+  });
+});
+
+it("allows for query to take place and returns a result correct results", () => {
+  return request(app)
+    .get("/api/reviews?sort_by=created_at&order=ASC&category=social deduction")
+    .expect(200)
+    .then(({ body }) => {
+      body.forEach((entity) => {
+        expect(entity.category).toBe("social deduction");
+      });
+    });
+});
+
+    it("returns the results unsorted and unfiltered if query parameters are invalid", () => {
+  return request(app)
+    .get("/api/reviews?sort_by=created_at&order=ASC&category=social deduction")
+    .expect(200)
+    .then(({ body }) => {
+      body.forEach((entity) => {
+        expect(entity.category).toBe("social deduction");
+      });
+    });
+});
+
