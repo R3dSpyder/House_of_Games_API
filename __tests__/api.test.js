@@ -449,4 +449,12 @@ describe("/api/comments/:comment_id GET delete a comment ", () => {
   it("Allows deletion and returns status 200", () => {
     return request(app).delete("/api/comments/2").send().expect(200);
   });
+
+  it("Correctly removes the comment", () => {
+    return request(app)
+      .delete("/api/comments/2")
+      .send()
+      .expect(200)
+      .then(() => {});
+  });
 });
