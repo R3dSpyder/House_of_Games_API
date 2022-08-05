@@ -439,3 +439,14 @@ it("returns the results unsorted and unfiltered if query parameters are invalid"
       });
     });
 });
+
+////////////////////// DELETE COMMENTS //////////////////////////////
+
+describe("/api/comments/:comment_id GET delete a comment ", () => {
+  it("throws an error if the comment ID is invalid", () => {
+    return request(app).delete("/api/comments/200").send().expect(400);
+  });
+  it("Allows deletion and returns status 200", () => {
+    return request(app).delete("/api/comments/2").send().expect(200);
+  });
+});

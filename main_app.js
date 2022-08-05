@@ -1,6 +1,7 @@
 const categories = require("./routes/categories");
 const reviews = require("./routes/reviews");
 const users = require("./routes/users");
+const comments = require("./routes/comments");
 
 const {
   customError,
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use("/api/categories", categories);
 app.use("/api/reviews", reviews);
 app.use("/api/users", users);
+app.use("/api/comments", comments);
 
 //error handling.
 app.use(customError);
