@@ -1,12 +1,8 @@
 const psqlError = (err, req, res, next) => {
-  const msg = "SQL error.";
+  let msg = "A SQL error has occured.";
+
   if (err.code) {
-    switch (err.code) {
-      case "22P02":
-        msg += "Invalid input";
-        break;
-    }
-    res.status(400).send({ error: msg });
+    res.status(400).send({ error: err.detail });
   } else {
     next(err);
   }

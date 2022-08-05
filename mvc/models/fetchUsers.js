@@ -1,15 +1,19 @@
 const db = require("../../db/connection.js");
 
-const fetchUsers = () => {
-  return db.query(`SELECT * FROM users`).then(({ rows }) => {
-    if (rows.length === 0) {
-      return Promise.reject({
+const fetchUsers = async () => {
+  try {
+    const getUsers = await db.query(`SELECT * FROM users`);
+    if (getUsers.rows.length > 0) {
+      return getUsers.rows;
+    } else {
+      throw {
         status: 404,
         msg: "Not found. No users exist in the database.",
-      });
+      };
     }
-    return rows;
-  });
+  } catch (error) {
+    throw error;
+  }
 };
 
 module.exports = fetchUsers;

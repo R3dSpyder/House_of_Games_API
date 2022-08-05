@@ -1,15 +1,15 @@
 const db = require("../../db/connection.js");
 
-const fetchCategories = () => {
-  return db.query(`SELECT * FROM categories`).then(({ rows }) => {
-    if (rows.length === 0) {
-      return Promise.reject({
-        status: 404,
-        msg: "Not found. No data",
-      });
-    }
-    return rows;
-  });
-};
+const fetchCategories = async() => {
+try{
+  const categories = await db.query(`SELECT * FROM categories`);
+  
+  if(categories.rows) {
+     return categories.rows;}
+     
+}catch(error){
+  throw new Error(400)
+}
+}
 
 module.exports = fetchCategories;
