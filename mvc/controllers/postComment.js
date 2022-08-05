@@ -3,7 +3,7 @@ const makeComment = require("../models/makeComment.js");
 const postComment = async (req, res, next) => {
   const created_at = new Date()
     .toISOString()
-    .replace(/T+/, " ") // replace T with a space
+    .replace(/T+/, " ")
     .replace(/Z+/, "");
   if (req.body.username && req.body.body) {
     try {

@@ -89,25 +89,25 @@ describe("/api/getReviewObjectById", () => {
       .get("/api/reviews/3")
       .expect(200)
       .then(({ body }) => {
-        expect(body.review).hasOwnProperty("review_id");
-        expect(body.review).hasOwnProperty("title");
-        expect(body.review).hasOwnProperty("category");
-        expect(body.review).hasOwnProperty("designer");
-        expect(body.review).hasOwnProperty("owner");
-        expect(body.review).hasOwnProperty("review_body");
-        expect(body.review).hasOwnProperty("review_img_url");
-        expect(body.review).hasOwnProperty("created_at");
-        expect(body.review).hasOwnProperty("votes");
-        expect(body.review.review_id).toBe(3);
+        expect(body).hasOwnProperty("review_id");
+        expect(body).hasOwnProperty("title");
+        expect(body).hasOwnProperty("category");
+        expect(body).hasOwnProperty("designer");
+        expect(body).hasOwnProperty("owner");
+        expect(body).hasOwnProperty("review_body");
+        expect(body).hasOwnProperty("review_img_url");
+        expect(body).hasOwnProperty("created_at");
+        expect(body).hasOwnProperty("votes");
+        expect(parseInt(body.review_id)).toBe(3);
       });
   });
 
   it("return an error if id is invalid", () => {
     return request(app)
       .get("/api/reviews/2000")
-      .expect(404)
+      .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("ID out of range");
+        expect(body.msg).toBe("that review ID is not found.");
       });
   });
 
@@ -140,9 +140,9 @@ describe("/api/:review_id put request to change the vote on a comment", () => {
     return request(app)
       .put("/api/reviews/100")
       .send({ inc_votes: 1 })
-      .expect(404)
+      .expect(400)
       .then(({ body }) => {
-        expect(body.msg).toBe("ID out of range");
+        expect(body.msg).toBe("that review ID is not found.");
       });
   });
 
@@ -209,38 +209,25 @@ describe("/api/reviews/:review_id get request", () => {
     return request(app)
       .get("/api/reviews/3")
       .expect(200)
-      .then(
-        ({
-          body: {
-            review: { comment_count },
-          },
-        }) => {
-          const notNull = comment_count.length >= 1;
-          expect(notNull).toBe(true);
-        }
-      );
+      .then(({ body }) => {
+        expect(body).toHaveProperty("comment_count");
+      });
   });
 
   it(" check the new review Object has the CORRECT comment_count value for comments", () => {
     return request(app)
       .get("/api/reviews/3")
       .expect(200)
-      .then(
-        ({
-          body: {
-            review: { comment_count },
-          },
-        }) => {
-          expect(comment_count).toBe("3");
-        }
-      );
+      .then(({ body }) => {
+        expect(body.comment_count).toBe("3");
+      });
   });
 
   it(" check the new review Object still returns if there are no comments to add to it", () => {
     return request(app)
       .get("/api/reviews/5")
       .expect(200)
-      .then(({ body: { review } }) => {
+      .then(({ body }) => {
         const reference = {
           category: "social deduction",
           comment_count: "0",
@@ -255,7 +242,7 @@ describe("/api/reviews/:review_id get request", () => {
           title: "Proident tempor et.",
           votes: 5,
         };
-        expect(review).toEqual(reference);
+        expect(body).toEqual(reference);
       });
   });
 });
@@ -264,6 +251,16 @@ describe("/api/reviews/:review_id get request", () => {
 
 describe("/api/reviews get request to get ALL review objects", () => {
   it("return an array of objects", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        expect(Array.isArray(body)).toEqual(true);
+        expect(typeof body[0] === "object").toEqual(true);
+      });
+  });
+
+  it("return empty array if no reviews", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
@@ -323,7 +320,7 @@ describe("/api/:review_id/comments get request for comments associated with revi
 
   it("return an empty array if no comments", () => {
     return request(app)
-      .get("/api/reviews/5/comments")
+      .get("/api/reviews/6/comments")
       .expect(200)
       .then(({ body }) => {
         expect(body).toEqual([]);
@@ -335,7 +332,7 @@ describe("/api/:review_id/comments get request for comments associated with revi
       .get("/api/reviews/2666/comments")
       .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toEqual("ID does not exist");
+        expect(msg).toEqual("that review ID is not found.");
       });
   });
 });
@@ -394,9 +391,7 @@ describe("/api/:review_id/comments POST request allows for comments to be create
       .send(testPost)
       .expect(400)
       .then(({ body }) => {
-        expect(body.error).toBe(
-          'Key (review_id)=(50) is not present in table "reviews".'
-        );
+        expect(body.msg).toBe("that review ID is not found.");
       });
   });
 
@@ -434,7 +429,7 @@ it("allows for query to take place and returns a result correct results", () => 
     });
 });
 
-    it("returns the results unsorted and unfiltered if query parameters are invalid", () => {
+it("returns the results unsorted and unfiltered if query parameters are invalid", () => {
   return request(app)
     .get("/api/reviews?sort_by=created_at&order=ASC&category=social deduction")
     .expect(200)
@@ -444,4 +439,3 @@ it("allows for query to take place and returns a result correct results", () => 
       });
     });
 });
-

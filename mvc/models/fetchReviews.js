@@ -1,8 +1,8 @@
 const { RowDescriptionMessage } = require("pg-protocol/dist/messages.js");
 const db = require("../../db/connection.js");
 
-const fetchReviews = (
-  id,
+const fetchReviews = async (
+  review_id,
   { sort_by = "created_at", order = "DESC", category = "social deduction" }
 ) => {
   let query =
@@ -14,15 +14,16 @@ const fetchReviews = (
     query += "";
   }
 
-  return db.query(query).then(({ rows }) => {
-    if (rows.length === 0) {
-      return Promise.reject({
-        status: 400,
-        msg: "Not found. No data",
-      });
+  try {
+    const checkReviews = await db.query(query);
+    if (checkReviews.rows.length > 0) {
+      return checkReviews.rows;
+    } else {
+      throw { status: 400, msg: "no reviews in the database" };
     }
-    return rows;
-  });
+  } catch (error) {
+    throw error;
+  }
 };
 
 module.exports = fetchReviews;
