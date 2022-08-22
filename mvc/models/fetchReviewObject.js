@@ -1,4 +1,4 @@
-const db = require("../../db/connection.js");
+const db = require("../../db/connection.js").default;
 
 //  GET: should have categories- references categories.slug, owner references users.username, comments.review_id primary key,
 // reviews.title, reviews.review_body, reviews.designer, reviews.review_image_url, reviews.votes, reviews.created_at

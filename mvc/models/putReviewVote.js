@@ -1,4 +1,4 @@
-const db = require("../../db/connection.js");
+const db = require("../../db/connection.js").default;
 
 const putReviewVote = async ({ inc_votes }, id) => {
   try {
