@@ -1,6 +1,7 @@
-const app = require("./Main_app");
+const { app } = require("./main_app");
 
-const { PORT = 9090 } = process.env;
+const { PORT } = process.env;
 
-app.listen(PORT);
-console.log(`API server listening on port: ${process.env}`);
+app.listen(PORT, () => {
+  console.log(`API server listening on port: ${PORT}`);
+});
