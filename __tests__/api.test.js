@@ -254,9 +254,9 @@ describe("/api/reviews get request to get ALL review objects", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
-      .then(({ body }) => {
-        expect(Array.isArray(body)).toEqual(true);
-        expect(typeof body[0] === "object").toEqual(true);
+      .then(({ body: { response } }) => {
+        expect(Array.isArray(response)).toEqual(true);
+        expect(typeof response[0] === "object").toEqual(true);
       });
   });
 
@@ -264,9 +264,9 @@ describe("/api/reviews get request to get ALL review objects", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
-      .then(({ body }) => {
-        expect(Array.isArray(body)).toEqual(true);
-        expect(typeof body[0] === "object").toEqual(true);
+      .then(({ body: { response } }) => {
+        expect(Array.isArray(response)).toEqual(true);
+        expect(typeof response[0] === "object").toEqual(true);
       });
   });
 
@@ -306,8 +306,8 @@ describe("/api/:review_id/comments get request for comments associated with revi
     return request(app)
       .get("/api/reviews")
       .expect(200)
-      .then(({ body }) => {
-        body.forEach((item) => {
+      .then(({ body: { response } }) => {
+        response.forEach((item) => {
           expect(item.comments).hasOwnProperty("comment_id");
           expect(item.comments).hasOwnProperty("votes");
           expect(item.comments).hasOwnProperty("created_at");
@@ -408,11 +408,20 @@ describe("/api/:review_id/comments POST request allows for comments to be create
 
 ////////////////////// ADDED ORDERING FOR GET REVIEWS TASK 11 //////////////////////////////
 
-describe("/api/reviews GET request with queries allows for sorted return ", () => {
+describe("/api/reviews GET request with queries, allows for sorted return if required ", () => {
+  it("returns all reviews if no query provided", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body: { response } }) => {
+        expect(response.length).toBe(13);
+      });
+  });
+
   it("allows for query to take place and doesn't return an error", () => {
     return request(app)
       .get(
-        "/api/reviews?sort_by=created_at&order=ASC&category=social deduction"
+        "/api/reviews?sort_by=created_at&order=ASC&category=social+deduction"
       )
       .expect(200);
   });
@@ -420,10 +429,11 @@ describe("/api/reviews GET request with queries allows for sorted return ", () =
 
 it("allows for query to take place and returns a result correct results", () => {
   return request(app)
-    .get("/api/reviews?sort_by=created_at&order=ASC&category=social deduction")
+    .get("/api/reviews?category=social+deduction")
     .expect(200)
-    .then(({ body }) => {
-      body.forEach((entity) => {
+    .then(({ body: { response } }) => {
+      response.forEach((entity) => {
+        console.log(entity);
         expect(entity.category).toBe("social deduction");
       });
     });
@@ -431,10 +441,10 @@ it("allows for query to take place and returns a result correct results", () => 
 
 it("returns the results unsorted and unfiltered if query parameters are invalid", () => {
   return request(app)
-    .get("/api/reviews?sort_by=created_at&order=ASC&category=social deduction")
+    .get("/api/reviews?sort_by=created_at&order=ASC&category=social+deduction")
     .expect(200)
-    .then(({ body }) => {
-      body.forEach((entity) => {
+    .then(({ body: { response } }) => {
+      response.forEach((entity) => {
         expect(entity.category).toBe("social deduction");
       });
     });
