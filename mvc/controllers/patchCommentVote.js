@@ -1,9 +1,9 @@
-const putVote = require("../models/putVote.js");
+const putCommentVote = require("../models/putCommentVote.js");
 
-const patchVote = async (req, res, next) => {
+const patchCommentVote = async (req, res, next) => {
   if (req.body.inc_votes) {
     try {
-      const patch = await putVote(req.body, req.params.review_id);
+      const patch = await putCommentVote(req.body, req.params.comment_id);
       if (patch) {
         res.status(200).send(patch[0]);
       }
@@ -18,4 +18,4 @@ const patchVote = async (req, res, next) => {
   }
 };
 
-module.exports = patchVote;
+module.exports = patchCommentVote;
