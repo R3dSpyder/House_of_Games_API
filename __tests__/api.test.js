@@ -123,7 +123,7 @@ describe("/api/getReviewObjectById", () => {
   });
 });
 
-////////////////////// PUT VOTES TASK5 //////////////////////////////
+////////////////////// PUT VOTES TO UPDATE REVIEW VOTES TASK5 //////////////////////////////
 
 describe("/api/:review_id put request to change the vote on a comment", () => {
   it("returns an error if nothing passed to the post request", () => {
@@ -456,5 +456,137 @@ describe("/api/comments/:comment_id GET delete a comment ", () => {
       .send()
       .expect(200)
       .then(() => {});
+  });
+});
+
+////////////////////// returns API //////////////////////////////
+
+describe("/api returns a list of all end points and how to use them", () => {
+  it("getsAPI", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ text }) => {
+        return JSON.parse(text);
+      })
+      .then((data) => {
+        console.log(data, "<<here");
+      });
+  });
+});
+
+////////////////////// returns user by USERNAME //////////////////////////////
+
+describe("/api returns the details of a single user", () => {
+  it("get a not found error with invalid username", () => {
+    return request(app)
+      .get("/api/users/tipToe")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(
+          "Not found. No users by that name exist in the database."
+        );
+      });
+  });
+
+  it("get a 200 response with a valid username", () => {
+    return request(app).get("/api/users/mallionaire").expect(200);
+  });
+
+  it("returns an object with a key of user", () => {
+    return request(app)
+      .get("/api/users/mallionaire")
+      .expect(200)
+      .then(({ body }) => {
+        console.log(Object.keys(body));
+        expect(Object.keys(body)[0]).toBe("user");
+      });
+  });
+
+  it("returns correct user information", () => {
+    return request(app)
+      .get("/api/users/mallionaire")
+      .expect(200)
+      .then(({ body: { user } }) => {
+        const userData = user[0];
+        expect(userData.name).toBe("haz");
+        expect(userData.avatar_url).toBe(
+          "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        );
+      });
+  });
+});
+
+////////////////////// PUT VOTES TO UPDATE COMMENT VOTES TASK5 //////////////////////////////
+
+describe("/api/:comment_id put request to change the vote on a comment", () => {
+  it("returns an error if body of request is wrong", () => {
+    return request(app)
+      .put("/api/comments/1")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request format to update vote");
+      });
+  });
+
+  it("returns an error if the comment_id does not exist", () => {
+    return request(app)
+      .put("/api/comments/7")
+      .send({ inc_votes: 1 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("that review ID is not found.");
+      });
+  });
+
+  it("returns an object with data if correct ID", () => {
+    return request(app)
+      .put("/api/comments/1")
+      .send({ inc_votes: 1 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(typeof body === "object").toEqual(true);
+      });
+  });
+
+  it("returns an object with the updated vote changed (added) by 1 ", () => {
+    return request(app)
+      .put("/api/comments/1")
+      .send({ inc_votes: 1 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.votes).toBe(17);
+      });
+  });
+
+  it("returns an object with the updated vote changed (subtracting)by 1 ", () => {
+    return request(app)
+      .put("/api/comments/1")
+      .send({ inc_votes: -1 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.votes).toBe(15);
+      });
+  });
+
+  it("returns an object with the updated vote changed (adding) by 2 ", () => {
+    return request(app)
+      .put("/api/comments/1")
+      .send({ inc_votes: 2 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.votes).toBe(18);
+      });
+  });
+
+  it("returns an object with the updated vote changed (subtracting) by 2 ", () => {
+    return request(app)
+      .put("/api/comments/1")
+      .send({ inc_votes: -2 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.votes).toBe(14);
+      });
   });
 });

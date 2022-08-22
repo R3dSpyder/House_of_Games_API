@@ -1,17 +1,17 @@
 const getReviewObjectById = require("../mvc/controllers/getReviewObject.js");
 const getComments = require("../mvc/controllers/getComments.js");
 const postComment = require("../mvc/controllers/postComment.js");
+const postReview = require("../mvc/controllers/postReview.js");
 const getReviews = require("../mvc/controllers/getReviews.js");
-const patchVote = require("../mvc/controllers/patchVote.js");
+const patchReviewVote = require("../mvc/controllers/patchReviewVote.js");
 const express = require("express");
 const router = express.Router();
 
-router.route("/").get(getReviews);
+router.route("/").get(getReviews).post(postReview);
 
-router.route("/:review_id(\\d+)").get(getReviewObjectById).put(patchVote);
+router.route("/:review_id(\\d+)").get(getReviewObjectById).put(patchReviewVote);
 
-router.route("/:review_id(\\d+)/comments").get(getComments)
-.post(postComment);
+router.route("/:review_id(\\d+)/comments").get(getComments).post(postComment);
 
 //error handling for path
 router.route("/:review_id(\\D*)").get((req, res) => {

@@ -1,4 +1,5 @@
 const psqlError = (err, req, res, next) => {
+  console.log(err);
   let msg = "A SQL error has occured.";
 
   if (err.code) {
