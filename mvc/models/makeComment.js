@@ -1,4 +1,4 @@
-const db = require("../../db/connection.js").default;
+const db = require("../../db/connection.js");
 
 const makeComment = async (username, body, id, created_at) => {
   try {

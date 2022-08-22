@@ -1,5 +1,5 @@
 const { RowDescriptionMessage } = require("pg-protocol/dist/messages.js");
-const db = require("../../db/connection.js").default;
+const db = require("../../db/connection.js");
 
 const fetchReviews = async (
   review_id,

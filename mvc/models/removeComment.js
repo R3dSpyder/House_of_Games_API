@@ -1,7 +1,6 @@
-const db = require("../../db/connection.js").default;
+const db = require("../../db/connection.js");
 
 const removeComment = async (id) => {
-  console.log("triggered");
   try {
     const checkCommentExists = await db.query(
       "SELECT 1 FROM comments WHERE comment_id=$1",
@@ -19,7 +18,6 @@ const removeComment = async (id) => {
       throw { status: 400, msg: "That comment does not exist" };
     }
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };

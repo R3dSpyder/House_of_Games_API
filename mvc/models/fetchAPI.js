@@ -1,4 +1,4 @@
-const db = require("../../db/connection.js").default;
+const db = require("../../db/connection.js");
 const fs = require("fs").promises;
 
 const fetchAPI = async () => {

@@ -1,5 +1,5 @@
 const request = require("supertest");
-const db = require("../db/connection.js").default;
+const db = require("../db/connection.js");
 const seed = require("../db/seeds/seed.js");
 const { app } = require("../main_app");
 const testData = require("../db/data/test-data/index.js");
@@ -468,9 +468,6 @@ describe("/api returns a list of all end points and how to use them", () => {
       .expect(200)
       .then(({ text }) => {
         return JSON.parse(text);
-      })
-      .then((data) => {
-        console.log(data, "<<here");
       });
   });
 });
@@ -498,7 +495,6 @@ describe("/api returns the details of a single user", () => {
       .get("/api/users/mallionaire")
       .expect(200)
       .then(({ body }) => {
-        console.log(Object.keys(body));
         expect(Object.keys(body)[0]).toBe("user");
       });
   });

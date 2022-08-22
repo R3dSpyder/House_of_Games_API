@@ -1,4 +1,4 @@
-const db = require("../../db/connection.js").default;
+const db = require("../../db/connection.js");
 const fetchUser = async (username) => {
   try {
     const getUser = await db.query(
