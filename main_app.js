@@ -3,6 +3,7 @@ const reviews = require("./routes/reviews");
 const users = require("./routes/users");
 const comments = require("./routes/comments");
 const api = require("./routes/api");
+const cors = require("cors");
 
 const {
   customError,
@@ -12,6 +13,7 @@ const {
 
 const express = require("express");
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 //routes
