@@ -15,9 +15,9 @@ describe("/api/getCategories", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
-      .then(({ body }) => {
-        expect(Array.isArray(body)).toEqual(true);
-        expect(typeof body[0] === "object").toEqual(true);
+      .then(({ body: { categories } }) => {
+        expect(Array.isArray(categories)).toEqual(true);
+        expect(typeof categories[0] === "object").toEqual(true);
       });
   });
 
@@ -25,8 +25,8 @@ describe("/api/getCategories", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
-      .then(({ body }) => {
-        body.forEach((member) => {
+      .then(({ body: { categories } }) => {
+        categories.forEach((member) => {
           expect(Object.keys(member).length === 2).toBe(true);
         });
       });
@@ -36,8 +36,8 @@ describe("/api/getCategories", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
-      .then(({ body }) => {
-        body.forEach((member) => {
+      .then(({ body: { categories } }) => {
+        categories.forEach((member) => {
           expect(
             member.hasOwnProperty("slug") &&
               member.hasOwnProperty("description") === true
@@ -50,8 +50,8 @@ describe("/api/getCategories", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
-      .then(({ body }) => {
-        body.forEach((member) => {
+      .then(({ body: { categories } }) => {
+        categories.forEach((member) => {
           expect(
             typeof member.slug && typeof member.description === "string"
           ).toBe(true);

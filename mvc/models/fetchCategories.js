@@ -5,7 +5,7 @@ const fetchCategories = async () => {
     const categories = await db.query(`SELECT * FROM categories`);
 
     if (categories.rows) {
-      return categories.rows;
+      return { categories: categories.rows };
     }
   } catch (error) {
     throw new Error(400);
