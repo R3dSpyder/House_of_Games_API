@@ -88,17 +88,17 @@ describe("/api/getReviewObjectById", () => {
     return request(app)
       .get("/api/reviews/3")
       .expect(200)
-      .then(({ body }) => {
-        expect(body).hasOwnProperty("review_id");
-        expect(body).hasOwnProperty("title");
-        expect(body).hasOwnProperty("category");
-        expect(body).hasOwnProperty("designer");
-        expect(body).hasOwnProperty("owner");
-        expect(body).hasOwnProperty("review_body");
-        expect(body).hasOwnProperty("review_img_url");
-        expect(body).hasOwnProperty("created_at");
-        expect(body).hasOwnProperty("votes");
-        expect(parseInt(body.review_id)).toBe(3);
+      .then(({ body: { review } }) => {
+        expect(review).hasOwnProperty("review_id");
+        expect(review).hasOwnProperty("title");
+        expect(review).hasOwnProperty("category");
+        expect(review).hasOwnProperty("designer");
+        expect(review).hasOwnProperty("owner");
+        expect(review).hasOwnProperty("review_body");
+        expect(review).hasOwnProperty("review_img_url");
+        expect(review).hasOwnProperty("created_at");
+        expect(review).hasOwnProperty("votes");
+        expect(parseInt(review.review_id)).toBe(3);
       });
   });
 
@@ -209,8 +209,8 @@ describe("/api/reviews/:review_id get request", () => {
     return request(app)
       .get("/api/reviews/3")
       .expect(200)
-      .then(({ body }) => {
-        expect(body).toHaveProperty("comment_count");
+      .then(({ body: { review } }) => {
+        expect(review).toHaveProperty("comment_count");
       });
   });
 
@@ -218,8 +218,8 @@ describe("/api/reviews/:review_id get request", () => {
     return request(app)
       .get("/api/reviews/3")
       .expect(200)
-      .then(({ body }) => {
-        expect(body.comment_count).toBe("3");
+      .then(({ body: { review } }) => {
+        expect(review.comment_count).toBe("3");
       });
   });
 
@@ -227,7 +227,7 @@ describe("/api/reviews/:review_id get request", () => {
     return request(app)
       .get("/api/reviews/5")
       .expect(200)
-      .then(({ body }) => {
+      .then(({ body: { review } }) => {
         const reference = {
           category: "social deduction",
           comment_count: "0",
@@ -242,7 +242,7 @@ describe("/api/reviews/:review_id get request", () => {
           title: "Proident tempor et.",
           votes: 5,
         };
-        expect(body).toEqual(reference);
+        expect(review).toEqual(reference);
       });
   });
 });

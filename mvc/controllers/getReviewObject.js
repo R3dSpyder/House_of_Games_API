@@ -4,7 +4,7 @@ const getReviewObjectById = async (req, res, next) => {
   try {
     const response = await fetchReviewObjectById(req.params.review_id);
     if (response) {
-      res.status(200).send(response[0]);
+      res.status(200).send({ review: response[0] });
     }
   } catch (error) {
     next(error);
