@@ -1,7 +1,7 @@
 const putReviewVote = require("../models/putReviewVote.js");
 
 const patchReviewVote = async (req, res, next) => {
-  if (req.body.inc_votes) {
+  if (req.body.inc_votes !== undefined && req.body.inc_votes !== null) {
     try {
       const patch = await putReviewVote(req.body, req.params.review_id);
       if (patch) {
