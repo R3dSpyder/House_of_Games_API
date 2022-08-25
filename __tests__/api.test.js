@@ -296,9 +296,9 @@ describe("/api/:review_id/comments get request for comments associated with revi
     return request(app)
       .get("/api/reviews/2/comments")
       .expect(200)
-      .then(({ body }) => {
-        expect(Array.isArray(body)).toEqual(true);
-        expect(typeof body[0] === "object").toEqual(true);
+      .then(({ body: { comments } }) => {
+        expect(Array.isArray(comments)).toEqual(true);
+        expect(typeof comments[0] === "object").toEqual(true);
       });
   });
 
@@ -322,8 +322,8 @@ describe("/api/:review_id/comments get request for comments associated with revi
     return request(app)
       .get("/api/reviews/6/comments")
       .expect(200)
-      .then(({ body }) => {
-        expect(body).toEqual([]);
+      .then(({ body: { comments } }) => {
+        expect(comments).toEqual([]);
       });
   });
 
@@ -378,9 +378,9 @@ describe("/api/:review_id/comments POST request allows for comments to be create
         return request(app)
           .get("/api/reviews/5/comments")
           .expect(200)
-          .then(({ body }) => {
-            expect(body[0].body === testPost.body).toBe(true);
-            expect(body[0].author === testPost.username).toBe(true);
+          .then(({ body: { comments } }) => {
+            expect(comments[0].body === testPost.body).toBe(true);
+            expect(comments[0].author === testPost.username).toBe(true);
           });
       });
   });
