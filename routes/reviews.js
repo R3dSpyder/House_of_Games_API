@@ -3,13 +3,18 @@ const getComments = require("../mvc/controllers/getComments.js");
 const postComment = require("../mvc/controllers/postComment.js");
 const postReview = require("../mvc/controllers/postReview.js");
 const getReviews = require("../mvc/controllers/getReviews.js");
+const deleteReview = require("../mvc/controllers/deleteReview.js");
 const patchReviewVote = require("../mvc/controllers/patchReviewVote.js");
 const express = require("express");
 const router = express.Router();
 
 router.route("/").get(getReviews).post(postReview);
 
-router.route("/:review_id(\\d+)").get(getReviewObjectById).put(patchReviewVote);
+router
+  .route("/:review_id(\\d+)")
+  .get(getReviewObjectById)
+  .put(patchReviewVote)
+  .delete(deleteReview);
 
 router.route("/:review_id(\\d+)/comments").get(getComments).post(postComment);
 
