@@ -7,6 +7,10 @@ const removeReview = async (id) => {
       [id]
     );
     if (checkReviewExists.rows.length > 0) {
+      const deleteAssociatedComments = await db.query(
+        "DELETE * FROM comments WHERE review_id=$1 RETURNING *",
+        [id]
+      );
       const deleteReview = await db.query(
         "DELETE FROM reviews WHERE review_id=$1 RETURNING *",
         [id]

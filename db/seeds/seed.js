@@ -32,9 +32,9 @@ const seed = async (data) => {
   CREATE TABLE reviews (
     review_id SERIAL PRIMARY KEY,
     title VARCHAR NOT NULL,
-    category VARCHAR NOT NULL REFERENCES categories(slug)ON DELETE CASCADE,
+    category VARCHAR NOT NULL REFERENCES categories(slug),
     designer VARCHAR,
-    owner VARCHAR NOT NULL REFERENCES users(username)ON DELETE CASCADE,
+    owner VARCHAR NOT NULL REFERENCES users(username),
     review_body VARCHAR NOT NULL,
     review_img_url VARCHAR DEFAULT 'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg',
     created_at TIMESTAMP DEFAULT NOW(),
