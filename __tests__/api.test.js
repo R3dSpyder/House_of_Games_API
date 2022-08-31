@@ -433,7 +433,6 @@ it("allows for query to take place and returns a result correct results", () => 
     .expect(200)
     .then(({ body: { response } }) => {
       response.forEach((entity) => {
-        console.log(entity);
         expect(entity.category).toBe("social deduction");
       });
     });
@@ -593,6 +592,31 @@ describe("/api/:comment_id put request to change the vote on a comment", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.votes).toBe(14);
+      });
+  });
+});
+
+////////////////////// DELETE REVIEW //////////////////////////////
+
+describe("/api/:review_id should delete the review and all associated comments", () => {
+  it("returns an error review_id doesnt exist", () => {
+    return request(app).delete("/api/reviews/13556").send().expect(400);
+  });
+
+  it("allows the delete if review id is correct", () => {
+    return request(app).delete("/api/reviews/13").send().expect(200);
+  });
+  it("check to see if all associated comments are removed", () => {
+    return request(app)
+      .delete("/api/reviews/3")
+      .send()
+      .expect(200)
+      .then(() => {
+        return db
+          .query("SELECT * FROM COMMENTS WHERE review_id=3")
+          .then((result) => {
+            expect(result.rows.length).toBe(0);
+          });
       });
   });
 });
